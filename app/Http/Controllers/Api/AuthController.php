@@ -23,8 +23,8 @@ class AuthController extends Controller
         //check password
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response([
-                'message' => ['These credentials do not match our records!']
-            ], 404);
+                'message' => 'These credentials do not match our records!'
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;

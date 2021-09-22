@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/users', function (Request $request) {
-    echo 123;
+    echo "Api request works.";
 });
 
 //public routes
