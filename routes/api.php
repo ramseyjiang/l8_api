@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/users', function (Request $request) {
-    echo "Api request works.";
-});
+Route::get('/users', 'Api\UserController@getAllUsers')->name('api.user.getAllUsers');
 
 //public routes
 Route::post('/login', 'Api\AuthController@login')->name('api.auth.login');
@@ -25,4 +23,5 @@ Route::post('/login', 'Api\AuthController@login')->name('api.auth.login');
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', 'Api\AuthController@logout')->name('api.auth.logout');
     Route::get('/user', 'Api\UserController@userInfo')->name('api.user.getInfo');
+    Route::delete('/delAllLeftCurrent', 'Api\UserController@delAllUsersLeftCurrent')->name('api.user.delAllLeftCurrent');
 });
