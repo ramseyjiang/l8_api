@@ -3,13 +3,20 @@
 namespace Tests\Feature\Api;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 use Illuminate\Http\Response;
 
 class AuthTest extends TestCase
 {
+    protected $user;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->withoutExceptionHandling(); //See clearly wrong messages when unittest fails.
+    }
+
     /**
      * A basic feature test example.
      *
@@ -17,36 +24,54 @@ class AuthTest extends TestCase
      */
     public function test_api_request()
     {
-        $response = $this->get('/api/users');
+        $response = $this->get('/api');
 
         $response->assertStatus(Response::HTTP_OK);
     }
 
     public function test_login_success()
     {
-        $user = User::factory()->create();
+        $user = $this->loginAsUser();
 
         $this->json('POST', route('api.auth.login'), [
             'email' => $user->email,
             'password' => 'password',
-        ])->assertStatus(Response::HTTP_CREATED)->assertJson(function (AssertableJson $json) use ($user) {
-            $json->has('token')
-                ->where('user', $user)
-                ->etc();
-        });
+        ])->assertStatus(Response::HTTP_CREATED)
+            ->assertJsonStructure([
+                'user' => ['name', 'email'],
+                'token'
+            ]);
     }
 
     public function test_login_failure()
     {
-        $user = User::factory()->create();
+        $user = $this->loginAsUser();
 
         $this->json('POST', route('api.auth.login'), [
             'email' => $user->email,
             'password' => 'random',
-        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJson(function (AssertableJson $json) use ($user) {
-            $json->has('message')
-                ->where('message', 'These credentials do not match our records!')
-                ->etc();
-        });
+        ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure(['message'])
+            ->assertJson(['message' => 'These credentials do not match our records!']);
+    }
+
+    public function test_log_out_success()
+    {
+        $this->loginAsUser();
+        $this->json('POST', route('api.auth.logout'))
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJson(['message' => 'Logged out']);
+    }
+
+    public function test_not_login_access_any_routes_need_login_failure()
+    {
+        $this->withExceptionHandling();
+        $this->withHeaders(['Accept' => 'application/json',])
+            ->json('POST', route('api.auth.logout')) //this route can be replaced to any route needs login,
+            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->assertJsonStructure(['message'])
+            ->assertJson([
+                'message' => 'Unauthenticated.'
+            ]);
     }
 }

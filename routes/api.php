@@ -13,15 +13,17 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::get('/users', 'Api\UserController@getAllUsers')->name('api.user.getAllUsers');
-
 //public routes
+Route::get('/', function (Request $request) {
+    echo "Api request works.";
+});
+
 Route::post('/login', 'Api\AuthController@login')->name('api.auth.login');
 
 //protected routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', 'Api\AuthController@logout')->name('api.auth.logout');
-    Route::get('/user', 'Api\UserController@userInfo')->name('api.user.getInfo');
-    Route::delete('/delAllLeftCurrent', 'Api\UserController@delAllUsersLeftCurrent')->name('api.user.delAllLeftCurrent');
+    Route::get('/getCurrentUser', 'Api\UserController@getCurrentUser')->name('api.user.getCurrentUser');
+    Route::get('/users', 'Api\UserController@getAllUsers')->name('api.user.getAllUsers');
+    Route::get('/users/{id}', 'Api\UserController@show')->where('id', '[0-9]+')->name('api.user.show');
 });

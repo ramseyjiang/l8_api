@@ -42,6 +42,6 @@ class AuthController extends Controller
         // auth()->user()->currentAccessToken()->delete();     //delete current user the most recent token
         $request->user()->tokens()->delete();    //delete current user all tokens
 
-        return response(['message' => 'Logged out'], Response::HTTP_CREATED);
+        return response(['message' => 'Logged out'], Response::HTTP_OK);
     }
 }

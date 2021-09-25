@@ -90,16 +90,6 @@ class BaseRepository implements EloquentRepositoryInterface
     }
 
     /**
-     * Delete all entities left current.
-     *
-     * @return bool
-     */
-    public function delAllLeftCurrent(array $ids): bool
-    {
-        return $this->model->whereNotIn('id', $ids)->delete();
-    }
-
-    /**
      * Delete all entities.
      *
      * @return bool

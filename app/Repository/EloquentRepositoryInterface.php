@@ -60,11 +60,4 @@ interface EloquentRepositoryInterface
      * @return bool
      */
     public function deleteAll(): bool;
-
-    /**
-     * Delete all entities left current.
-     *
-     * @return bool
-     */
-    public function delAllLeftCurrent(array $ids): bool;
 }
