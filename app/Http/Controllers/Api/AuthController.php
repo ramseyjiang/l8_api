@@ -8,6 +8,7 @@ use App\Traits\Api\AuthUser;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use Illuminate\Http\Response;
 use Illuminate\Auth\Events\Registered;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -33,7 +34,7 @@ class AuthController extends Controller
             $user = $this->userRepository->findByEmail($request->email); //Get login user
 
             if ($user) {
-                $this->userRepository->active($user->id);
+                $user->status != User::STATUS_ACTIVE ? $this->userRepository->active($user->id) : '';
                 $response = $this->createToken($user);
             } else {
                 $response = [
