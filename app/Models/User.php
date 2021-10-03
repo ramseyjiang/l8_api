@@ -7,10 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    const ROLE_USER = 'User';
+    const ROLE_ADMIN = 'Admin';
+
+    const STATUS_PENDING = 'Pending';
+    const STATUS_DISABLED = 'Disabled';
+    const STATUS_ACTIVE = 'Active';
 
     /**
      * The attributes that are mass assignable.
@@ -41,4 +49,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $attributes = [
+        'role' => self::ROLE_USER
+    ];
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = ucfirst($value);
+    }
+
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = Hash::make($password);
+    }
 }

@@ -19,6 +19,8 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('status')->default('Pending')->comment('Pending, Disabled, Active');
+            $table->string('role')->default('user')->comment('User, Admin');
             $table->rememberToken();
             $table->timestamps();
         });

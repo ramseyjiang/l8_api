@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use \App\Models\User;
 
 class UsersTableSeeder extends Seeder
@@ -18,7 +17,9 @@ class UsersTableSeeder extends Seeder
         User::factory()->create([
             'name' => 'admin',
             'email' => 'admin@qq.com',
-            'password' => Hash::make('password')
+            'password' => 'password'
         ]);
+
+        \App\Models\User::factory(10)->create();
     }
 }
