@@ -21,6 +21,7 @@ Route::get('/', function (Request $request) {
 Route::post('/register', 'Api\AuthController@register')->name('api.auth.register');
 Route::post('/login', 'Api\AuthController@login')->name('api.auth.login');
 Route::post('/email/password/forgot', 'Api\EmailController@sendResetLinkEmail')->name('api.email.forgotPassword');
+Route::get('/email/password/reset/form', 'Api\EmailController@showPasswordResetForm')->name('api.email.showPasswordResetForm');
 Route::post('/email/password/reset', 'Api\EmailController@passwordReset')->name('api.email.resetPassword');
 
 //protected routes
