@@ -30,7 +30,7 @@ class AuthTest extends TestCase
         $this->json('POST', route('api.auth.login'), [
             'email' => $user->email,
             'password' => 'password',
-        ])->assertStatus(Response::HTTP_CREATED)->assertJson(function (AssertableJson $json) use ($user) {
+        ])->assertStatus(Response::HTTP_ACCEPTED)->assertJson(function (AssertableJson $json) use ($user) {
             $json->has('token')
                 // ->where('user', $user)
                 ->etc();
@@ -49,5 +49,13 @@ class AuthTest extends TestCase
                 ->where('message', 'These credentials do not match our records!')
                 ->etc();
         });
+    }
+
+    public function test_log_out_success()
+    {
+        $this->loginAsUser();
+        $this->json('POST', route('api.auth.logout'))
+            ->assertStatus(Response::HTTP_ACCEPTED)
+            ->assertJson(['message' => 'Logged out']);
     }
 }
