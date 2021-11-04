@@ -15,11 +15,12 @@ class AuthTest extends TestCase
      *
      * @return void
      */
-    public function test_api_request()
+    public function test_api_request_works()
     {
-        $response = $this->get('/api/users');
+        $response = $this->get('/api/');
 
         $response->assertStatus(Response::HTTP_OK);
+        $response->assertSee('Api request works.');
     }
 
     public function test_login_success()
