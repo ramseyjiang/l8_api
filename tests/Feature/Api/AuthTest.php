@@ -46,7 +46,7 @@ class AuthTest extends TestCase
             'password' => 'random',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJson(function (AssertableJson $json) use ($user) {
             $json->has('message')
-                ->where('message', 'These credentials do not match our records!')
+                ->where('message', 'The given data was invalid.')
                 ->etc();
         });
     }

@@ -5,27 +5,19 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Response;
+use App\Http\Requests\Auth\LoginRequest;
+
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $data = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        $request->authenticate();
+        $request->session()->regenerate();
 
-        //check email
+        //Get login user
         $user = User::where('email', $request->email)->first();
-
-        //check password
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response([
-                'message' => 'These credentials do not match our records!'
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -39,6 +31,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         // auth()->user()->currentAccessToken()->delete();     //delete current user the most recent token
         $request->user()->tokens()->delete();    //delete current user all tokens
 
