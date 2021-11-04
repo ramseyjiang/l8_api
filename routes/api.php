@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function (Request $request) {
-    return "Api request works.";
-});
+    return response("Api request works.");
+})->name('api.entrance');
 
 //public routes
 Route::post('/login', 'Api\AuthController@login')->name('api.auth.login');

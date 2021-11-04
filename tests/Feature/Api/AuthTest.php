@@ -17,7 +17,7 @@ class AuthTest extends TestCase
      */
     public function test_api_request_works()
     {
-        $response = $this->get('/api/');
+        $response = $this->json('GET', route('api.entrance'));
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertSee('Api request works.');
