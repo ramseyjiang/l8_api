@@ -21,6 +21,8 @@ Route::get('/', function (Request $request) {
 //public routes
 Route::post('/login', 'Api\AuthController@login')->name('api.auth.login');
 Route::post('/register', 'Api\AuthController@register')->name('api.auth.register');
+Route::post('/password/forgot', 'Api\PasswordController@forgotPassword')->name('api.password.forgot');
+Route::post('/password/reset', 'Api\PasswordController@resetPassword')->name('api.password.reset');
 
 //protected routes
 Route::middleware('auth:sanctum')->group(function () {

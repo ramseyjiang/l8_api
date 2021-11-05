@@ -22,5 +22,7 @@ class UsersSeeder extends Seeder
             'role' => User::ROLE_ADMIN,
             'status' =>  User::STATUS_ACTIVE,
         ]);
+
+        \App\Models\User::factory(10)->create();
     }
 }
