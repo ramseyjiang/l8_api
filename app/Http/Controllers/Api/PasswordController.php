@@ -25,7 +25,7 @@ class PasswordController extends Controller
 
         return ($status = $this->getResetLinkStatus($request)) == Password::RESET_LINK_SENT
             ? response(['message' => 'We have emailed your password reset link!'], Response::HTTP_ACCEPTED)
-            : response(['email' => __($status)], Response::HTTP_BAD_REQUEST);
+            : response(['message' => __($status)], Response::HTTP_BAD_REQUEST);
     }
 
     public function resetPassword(Request $request)
@@ -36,6 +36,6 @@ class PasswordController extends Controller
         // If there is an error, it will send a json error message back.
         return ($status = $this->getResetStatus($request)) == Password::PASSWORD_RESET
             ? response(['message' => 'Congrats, your password reset is successful.'], Response::HTTP_ACCEPTED)
-            : response(['email' => __($status)], Response::HTTP_BAD_REQUEST);
+            : response(['message' => __($status)], Response::HTTP_BAD_REQUEST);
     }
 }

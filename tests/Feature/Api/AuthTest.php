@@ -58,4 +58,17 @@ class AuthTest extends TestCase
             ->assertStatus(Response::HTTP_ACCEPTED)
             ->assertJson(['message' => 'Logged out']);
     }
+
+    public function test_register_success()
+    {
+        $name = 'test register';
+        $this->json('POST', route('api.auth.register'), [
+            'name' => 'test register',
+            'last_name' => 'test register',
+            'email' => rand(1, 9999) . '@qq.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ])->assertStatus(Response::HTTP_CREATED)
+            ->assertJson(['message' => 'Congrats ' . ucfirst($name) . '. Register success, please wait for approval.']);
+    }
 }
