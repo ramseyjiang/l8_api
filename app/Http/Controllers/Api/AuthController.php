@@ -37,7 +37,15 @@ class AuthController extends Controller
             'token' => $token
         ];
 
-        return response($response, Response::HTTP_ACCEPTED);
+        //If email isn't verified, a user cannot login.
+        if (empty($user->email_verified_at)) {
+            return response([
+                'message' => 'Please verify your email first.',
+                'token' => $token
+            ], Response::HTTP_UNAUTHORIZED);
+        } else {
+            return response($response, Response::HTTP_ACCEPTED);
+        }
     }
 
     public function logout(Request $request)
@@ -63,9 +71,11 @@ class AuthController extends Controller
         event(new Registered($user = $this->userContract->create($userForm)));
         $user = $this->userContract->findUserByEmail($request->email);
 
-        $response = [
-            'message' => 'Congrats ' . $user->name . '. Register success, please wait for approval.'
+        $user->sendEmailVerificationNotification(); //Send a verify email 
+
+        $message = [
+            'message' => 'Congrats ' . $user->name . '. Register success, please check your email and active your account.'
         ];
-        return response($response, Response::HTTP_CREATED);
+        return response($message, Response::HTTP_CREATED);
     }
 }

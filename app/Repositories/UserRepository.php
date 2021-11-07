@@ -56,7 +56,8 @@ class UserRepository extends BaseRepository implements UserContract
     }
 
     /**
-     * Disable a user login portal.
+     * Disable a user login.
+     * It is only used by the nova admin.
      *
      * @param integer $id
      * @return void
@@ -70,15 +71,15 @@ class UserRepository extends BaseRepository implements UserContract
     }
 
     /**
-     * Active a user after first login portal.
-     * The user status should be changed from approved to active.
+     * Make a status which is disabled to active.
+     * The user status should be changed from disabled to active.
      *
      * @param integer $id
      * @return void
      */
     public function active(int $id)
     {
-        $user = $this->model->where('status', User::STATUS_PENDING)->find($id);
+        $user = $this->model->where('status', User::STATUS_DISABLED)->find($id);
         $user->status = User::STATUS_ACTIVE;
 
         return $user->save();

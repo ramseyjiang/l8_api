@@ -14,7 +14,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     const ROLE_CUSTOMER = 'Customer';
     const ROLE_ADMIN = 'Admin';
-    const STATUS_PENDING = 'Pending';
     const STATUS_DISABLED = 'Disabled';
     const STATUS_ACTIVE = 'Active';
 
@@ -31,6 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'postal_address',
         'password',
         'subscribe',
+        'email_verified_at'
     ];
 
     /**

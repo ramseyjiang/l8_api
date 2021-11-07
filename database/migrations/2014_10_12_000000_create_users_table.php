@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('phone_number')->nullable();
             $table->text('postal_address')->nullable();
             $table->string('role')->default('Customer')->comment('Customer, Admin');
-            $table->string('status')->default('Pending')->comment('Pending, Disable, Active');
+            $table->string('status')->default('Active')->comment('Disable, Active');
             $table->boolean('subscribe')->default(0);
             $table->timestamp('last_login_date')->nullable();
             $table->timestamp('last_session_date')->nullable();

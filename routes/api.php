@@ -26,6 +26,12 @@ Route::post('/password/reset', 'Api\PasswordController@resetPassword')->name('ap
 
 //protected routes
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/email/verification', 'Api\EmailController@sendVerification')->name('api.email.verification');
+    ROute::get('/email/verify/{id}/{hash}', 'Api\EmailController@verifyEmail')->name('api.email.verify');
     Route::post('/logout', 'Api\AuthController@logout')->name('api.auth.logout');
+});
+
+//Only email verified users can access routes below.
+Route::middleware('auth:sanctum', 'verified')->group(function () {
     Route::get('/user', 'Api\UserController@userInfo')->name('api.user.getInfo');
 });

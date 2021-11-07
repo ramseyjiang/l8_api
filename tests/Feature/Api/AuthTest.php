@@ -37,7 +37,7 @@ class AuthTest extends TestCase
         });
     }
 
-    public function test_login_failure()
+    public function test_login_data_invalid_failure()
     {
         $user = User::factory()->create();
 
@@ -47,6 +47,22 @@ class AuthTest extends TestCase
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJson(function (AssertableJson $json) use ($user) {
             $json->has('message')
                 ->where('message', 'The given data was invalid.')
+                ->etc();
+        });
+    }
+
+    public function test_login_email_verified_failure()
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+
+        $this->json('POST', route('api.auth.login'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertStatus(Response::HTTP_UNAUTHORIZED)->assertJson(function (AssertableJson $json) use ($user) {
+            $json->has('message')
+                ->where('message', 'Please verify your email first.')
                 ->etc();
         });
     }
@@ -69,6 +85,6 @@ class AuthTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password',
         ])->assertStatus(Response::HTTP_CREATED)
-            ->assertJson(['message' => 'Congrats ' . ucfirst($name) . '. Register success, please wait for approval.']);
+            ->assertJson(['message' => 'Congrats ' . ucfirst($name) . '. Register success, please check your email and active your account.']);
     }
 }

@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Mails\LoginReminder;
 use Illuminate\Support\Facades\Mail;
 
-class sendReminderEmail extends Command
+class SendReminderEmail extends Command
 {
     /**
      * The name and signature of the console command.
@@ -35,6 +35,7 @@ class sendReminderEmail extends Command
 
     /**
      * Execute the console command.
+     * "php artisan reminder:send" is used to trigger it on command line.
      *
      * @return int
      */
@@ -43,7 +44,7 @@ class sendReminderEmail extends Command
         $tempDate = env('LOGIN_REMINDER_MAIL_SEND_INTERVAL_NUM') . ' ' . env('LOGIN_REMINDER_MAIL_SEND_INTERVAL_TIME');
         $date = date('Y-m-d H:i:s', strtotime($tempDate));
 
-        $allPendingUsers = User::where('status', User::STATUS_PENDING)
+        $allPendingUsers = User::where('email_verified_at', null)
             ->where('created_at', '<=', $date)
             ->get();
 
