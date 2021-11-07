@@ -8,9 +8,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    const ROLE_CUSTOMER = 'Customer';
+    const ROLE_ADMIN = 'Admin';
+    const STATUS_DISABLED = 'Disabled';
+    const STATUS_ACTIVE = 'Active';
 
     /**
      * The attributes that are mass assignable.
@@ -19,8 +24,13 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'last_name',
         'email',
+        'phone_number',
+        'postal_address',
         'password',
+        'subscribe',
+        'email_verified_at'
     ];
 
     /**
@@ -33,6 +43,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $attributes = [
+        'role' => self::ROLE_CUSTOMER
+    ];
+
     /**
      * The attributes that should be cast.
      *
@@ -40,5 +54,22 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_login_date' => 'datetime',
+        'last_session_date' => 'datetime',
     ];
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = ucfirst($value);
+    }
+
+    public function setLastNameAttribute($value)
+    {
+        $this->attributes['last_name'] = ucfirst($value);
+    }
+
+    public function setPostalAddressAttribute($value)
+    {
+        $this->attributes['postal_address'] = ucfirst($value);
+    }
 }

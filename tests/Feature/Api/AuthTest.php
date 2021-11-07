@@ -15,11 +15,12 @@ class AuthTest extends TestCase
      *
      * @return void
      */
-    public function test_api_request()
+    public function test_api_request_works()
     {
-        $response = $this->get('/api/users');
+        $response = $this->json('GET', route('api.entrance'));
 
         $response->assertStatus(Response::HTTP_OK);
+        $response->assertSee('Api request works.');
     }
 
     public function test_login_success()
@@ -29,14 +30,14 @@ class AuthTest extends TestCase
         $this->json('POST', route('api.auth.login'), [
             'email' => $user->email,
             'password' => 'password',
-        ])->assertStatus(Response::HTTP_CREATED)->assertJson(function (AssertableJson $json) use ($user) {
+        ])->assertStatus(Response::HTTP_ACCEPTED)->assertJson(function (AssertableJson $json) use ($user) {
             $json->has('token')
-                ->where('user', $user)
+                // ->where('user', $user)
                 ->etc();
         });
     }
 
-    public function test_login_failure()
+    public function test_login_data_invalid_failure()
     {
         $user = User::factory()->create();
 
@@ -45,8 +46,45 @@ class AuthTest extends TestCase
             'password' => 'random',
         ])->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)->assertJson(function (AssertableJson $json) use ($user) {
             $json->has('message')
-                ->where('message', 'These credentials do not match our records!')
+                ->where('message', 'The given data was invalid.')
                 ->etc();
         });
+    }
+
+    public function test_login_email_verified_failure()
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+
+        $this->json('POST', route('api.auth.login'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertStatus(Response::HTTP_UNAUTHORIZED)->assertJson(function (AssertableJson $json) use ($user) {
+            $json->has('message')
+                ->where('message', 'Please verify your email first.')
+                ->etc();
+        });
+    }
+
+    public function test_log_out_success()
+    {
+        $this->loginAsUser();
+        $this->json('POST', route('api.auth.logout'))
+            ->assertStatus(Response::HTTP_ACCEPTED)
+            ->assertJson(['message' => 'Logged out']);
+    }
+
+    public function test_register_success()
+    {
+        $name = 'test register';
+        $this->json('POST', route('api.auth.register'), [
+            'name' => 'test register',
+            'last_name' => 'test register',
+            'email' => rand(1, 9999) . '@qq.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ])->assertStatus(Response::HTTP_CREATED)
+            ->assertJson(['message' => 'Congrats ' . ucfirst($name) . '. Register success, please check your email and active your account.']);
     }
 }
